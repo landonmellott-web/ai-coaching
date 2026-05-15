@@ -25,21 +25,36 @@
 
   html, body {
     height: 100%;
-    background: var(--bg);
+    background: #040810;
     color: var(--text);
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── STAGE (16:9 constrained box) ── */
+  .stage {
+    position: relative;
+    aspect-ratio: 16/9;
+    width: min(100vw, calc(100vh * 16 / 9));
+    background: var(--bg);
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.04), 0 32px 80px rgba(0,0,0,.8);
+    border-radius: 6px;
+    flex-shrink: 0;
   }
 
   /* ── SLIDE ENGINE ── */
-  .deck { width: 100vw; height: 100vh; position: relative; }
+  .deck { width: 100%; height: 100%; position: relative; }
 
   .slide {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
-    padding: 60px 80px;
+    padding: 52px 72px;
     opacity: 0; pointer-events: none;
-    transition: opacity .45s ease, transform .45s ease;
+    transition: opacity .4s ease, transform .4s ease;
     transform: translateX(40px);
     overflow: hidden;
   }
@@ -52,28 +67,63 @@
     transform: translateX(-40px);
   }
 
-  /* ── PROGRESS ── */
+  /* ── PROGRESS BAR (inside stage) ── */
   #progress-bar {
-    position: fixed; top: 0; left: 0; height: 3px;
+    position: absolute; top: 0; left: 0; height: 3px;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
     transition: width .4s ease; z-index: 100;
   }
+
+  /* ── SLIDE COUNTER (inside stage) ── */
   #slide-counter {
-    position: fixed; bottom: 24px; right: 32px;
-    font-size: 12px; color: var(--text-muted); letter-spacing: 2px;
+    position: absolute; bottom: 18px; right: 24px;
+    font-size: 11px; color: var(--text-muted); letter-spacing: 2px;
     z-index: 100;
   }
+
+  /* ── KEYBOARD HINT ── */
   #nav-hint {
-    position: fixed; bottom: 24px; left: 50%;
+    position: fixed; bottom: 12px; left: 50%;
     transform: translateX(-50%);
-    font-size: 12px; color: var(--text-muted); letter-spacing: 1px;
-    z-index: 100; animation: pulse 2s infinite;
+    font-size: 11px; color: rgba(255,255,255,.25); letter-spacing: 1px;
+    z-index: 200; animation: pulse 2s infinite; white-space: nowrap;
   }
-  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:.9} }
+  @keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:.7} }
+
+  /* ── NAV ARROWS ── */
+  .nav-btn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    color: rgba(255,255,255,.45); font-size: 20px;
+    cursor: pointer; z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s, color .2s, opacity .2s;
+  }
+  .nav-btn:hover:not(:disabled) { background: rgba(255,255,255,.13); color: #fff; }
+  .nav-btn:disabled { opacity: .18; cursor: default; pointer-events: none; }
+  #btn-prev { left: 14px; }
+  #btn-next { right: 14px; }
+
+  /* ── DOT NAVIGATION ── */
+  .dot-nav {
+    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 7px; align-items: center; z-index: 200;
+  }
+  .slide-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,.2); border: none; padding: 0;
+    cursor: pointer; transition: all .25s;
+  }
+  .slide-dot.active {
+    background: var(--accent); width: 22px; border-radius: 4px;
+  }
+  .slide-dot:hover:not(.active) { background: rgba(255,255,255,.45); }
 
   /* ── COACH PANEL ── */
   #coach-panel {
-    position: fixed; bottom: 0; left: 0; right: 0;
+    position: absolute; bottom: 0; left: 0; right: 0;
     background: rgba(124,58,237,.93); backdrop-filter: blur(12px);
     border-top: 1px solid rgba(124,58,237,.4);
     padding: 14px 32px 14px 32px;
@@ -93,7 +143,7 @@
     cursor: pointer; font-size: 18px; padding: 4px 8px;
   }
   #coach-toggle {
-    position: fixed; bottom: 20px; left: 32px;
+    position: absolute; bottom: 14px; left: 20px;
     background: rgba(124,58,237,.3); border: 1px solid rgba(124,58,237,.5);
     color: var(--accent2); border-radius: 20px;
     padding: 6px 14px; font-size: 11px; font-weight: 700;
@@ -346,16 +396,27 @@
 
   /* ── PRINT ── */
   @media print {
+    html, body { display: block; background: #fff; }
+    .stage { width: 100vw; height: auto; box-shadow: none; border-radius: 0; aspect-ratio: unset; }
+    .deck { position: static; }
     .slide { position: relative; opacity:1; transform:none; pointer-events:all; page-break-after:always; height:100vh; }
-    #coach-toggle, #coach-panel, #nav-hint, #progress-bar, #slide-counter { display:none; }
+    #coach-toggle, #coach-panel, #nav-hint, #progress-bar, #slide-counter, .nav-btn, .dot-nav { display:none; }
   }
 </style>
 </head>
 <body>
 
+<!-- Viewport-level chrome -->
+<button class="nav-btn" id="btn-prev" onclick="goTo(current-1)" aria-label="Previous slide">&#8592;</button>
+<button class="nav-btn" id="btn-next" onclick="goTo(current+1)" aria-label="Next slide">&#8594;</button>
+<div class="dot-nav" id="dot-nav"></div>
+<div id="nav-hint">← → Arrow keys · C for coach notes</div>
+
+<!-- 16:9 presentation stage -->
+<div class="stage" id="stage">
+
 <div id="progress-bar"></div>
 <div id="slide-counter"></div>
-<div id="nav-hint">← → Arrow keys to navigate · C for coach notes</div>
 
 <button id="coach-toggle" onclick="toggleCoach()">💬 Coach Notes</button>
 <div id="coach-panel">
@@ -1448,6 +1509,7 @@
 
 
 </div><!-- /deck -->
+</div><!-- /stage -->
 
 <script>
 // ── State ──
@@ -1459,12 +1521,23 @@ const scores = new Array(5).fill(0);
 
 const coachNotes = Array.from(slides).map(s => s.dataset.coach || '');
 
+// ── Build dot nav ──
+const dotNav = document.getElementById('dot-nav');
+for (let i = 0; i < total; i++) {
+  const d = document.createElement('button');
+  d.className = 'slide-dot' + (i === 0 ? ' active' : '');
+  d.setAttribute('aria-label', `Slide ${i + 1}`);
+  d.addEventListener('click', () => goTo(i));
+  dotNav.appendChild(d);
+}
+const allDots = dotNav.querySelectorAll('.slide-dot');
+
 // ── Navigation ──
 function goTo(n) {
   if (n < 0 || n >= total) return;
   slides[current].classList.remove('active');
   slides[current].classList.add('exit');
-  setTimeout(() => { slides[current].classList.remove('exit'); }, 450);
+  setTimeout(() => { slides[current].classList.remove('exit'); }, 400);
   current = n;
   slides[current].classList.add('active');
   updateUI();
@@ -1475,6 +1548,11 @@ function updateUI() {
   const pct = ((current + 1) / total * 100).toFixed(1);
   document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('slide-counter').textContent = `${current + 1} / ${total}`;
+  // dots
+  allDots.forEach((d, i) => d.classList.toggle('active', i === current));
+  // arrows
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').disabled = current === total - 1;
   if (coachOpen) document.getElementById('coach-note').textContent = coachNotes[current];
 }
 
