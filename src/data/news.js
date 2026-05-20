@@ -1,0 +1,112 @@
+export const newsArticles = [
+  {
+    id: 'n1',
+    source: 'MIT Tech Review',
+    headline: 'OpenAI releases o3-mini with unprecedented math reasoning',
+    summary: 'The new model achieves 97% accuracy on competition-level math problems, beating human experts in speed and precision.',
+    category: 'Research',
+    timestamp: '1h ago',
+    readTime: '3 min',
+    tier: 'free',
+    emoji: '🧠',
+  },
+  {
+    id: 'n2',
+    source: 'The Verge',
+    headline: 'Google DeepMind\'s AI designs better chips than human engineers',
+    summary: 'AlphaChip autonomously redesigned processor layouts, cutting energy consumption by 40% while improving performance.',
+    category: 'Tools',
+    timestamp: '3h ago',
+    readTime: '4 min',
+    tier: 'free',
+    emoji: '⚡',
+  },
+  {
+    id: 'n3',
+    source: 'TechCrunch',
+    headline: 'Suno AI\'s new model creates full songs from text in 10 seconds',
+    summary: 'The latest update generates professional-quality music with vocals, instruments, and mixing — no music knowledge required.',
+    category: 'Creative',
+    timestamp: '5h ago',
+    readTime: '2 min',
+    tier: 'free',
+    emoji: '🎵',
+  },
+  {
+    id: 'n4',
+    source: 'Wired',
+    headline: 'Anthropic raises $2.7B as Claude becomes enterprise AI of choice',
+    summary: 'Companies including Salesforce and Notion are integrating Claude across their platforms for AI-native workflows.',
+    category: 'Business',
+    timestamp: '7h ago',
+    readTime: '5 min',
+    tier: 'free',
+    emoji: '💼',
+  },
+  {
+    id: 'n5',
+    source: 'Nature',
+    headline: 'AI predicts cancer 4 years before doctors can detect it on scans',
+    summary: 'A new model trained on 10 million radiology images identifies precancerous patterns invisible to the human eye.',
+    category: 'Research',
+    timestamp: '10h ago',
+    readTime: '6 min',
+    tier: 'pro',
+    emoji: '🔬',
+  },
+  {
+    id: 'n6',
+    source: 'Bloomberg',
+    headline: 'EU AI Act enforcement begins: what it means for teen app developers',
+    summary: 'New regulations affect apps with AI features, but carve-outs for open-source and research projects remain intact.',
+    category: 'Policy',
+    timestamp: '12h ago',
+    readTime: '4 min',
+    tier: 'pro',
+    emoji: '⚖️',
+  },
+  {
+    id: 'n7',
+    source: 'TechCrunch',
+    headline: 'Cursor AI editor hits 1M developers — coding will never be the same',
+    summary: 'The AI-powered IDE lets developers describe features in plain English and ships full implementations in seconds.',
+    category: 'Tools',
+    timestamp: '14h ago',
+    readTime: '3 min',
+    tier: 'pro',
+    emoji: '💻',
+  },
+  {
+    id: 'n8',
+    source: 'Fast Company',
+    headline: 'Teen AI founders are disrupting industries that took adults decades to enter',
+    summary: 'Six teenagers under 18 have launched AI startups that collectively serve over 2 million users worldwide.',
+    category: 'Business',
+    timestamp: '1d ago',
+    readTime: '5 min',
+    tier: 'pro',
+    emoji: '🚀',
+  },
+]
+
+export const aiTip = {
+  title: 'Today\'s AI Tip 💡',
+  text: 'When ChatGPT gives a mediocre answer, don\'t give up — give feedback. Try: "That\'s good but too generic. Make it more specific to [your situation] and cut it by 30%." The best outputs come from iteration, not first prompts.',
+  tier: 'free',
+}
+
+export const weeklyRoundup = {
+  title: 'Weekly AI Roundup',
+  subtitle: 'The 5 biggest AI stories this week — summarized for you',
+  tier: 'pro',
+}
+
+export const toolSpotlight = {
+  tool: 'Perplexity AI',
+  tagline: 'The search engine that answers, not just links',
+  description: 'Perplexity uses AI to search the web and synthesize answers with citations. Perfect for research.',
+  tier: 'pro',
+  emoji: '🔍',
+}
+
+export const categories = ['All', 'Tools', 'Research', 'Business', 'Creative', 'Policy']
